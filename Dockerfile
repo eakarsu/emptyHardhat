@@ -31,10 +31,14 @@ RUN  cd /home/Research/aave &&\
 RUN cd /home/Research/enzyme &&\
     npm install yarn -g &&\
     yarn install &&\
-    yarn compile 
+    yarn compile
 
 #clone project that will initialize aave lp
-RUN git clone https://github.com/eakarsu/enzyme-fund-create.git erol-enzyme-aave-fork-protocol
+RUN  mkdir /home/Research/erol-enzyme-aave-fork-protocol  &&\
+     cd /home/Research &&\
+     git clone https://github.com/eakarsu/enzyme-fund-create.git erol-enzyme-aave-fork-protocol &&\
+     cd /home/Research/erol-enzyme-aave-fork-protocol &&\
+     yarn install
 
 #Set working directory
 WORKDIR /home/Research
