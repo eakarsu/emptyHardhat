@@ -30,7 +30,8 @@ RUN  cd /home/Research/aave &&\
 #deploy enzyme
 RUN cd /home/Research/enzyme &&\
     npm install yarn -g &&\
-    yarn install
+    yarn install &&\
+    yarn compile
 
 #Set working directory
 WORKDIR /home/Research
