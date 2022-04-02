@@ -44,6 +44,7 @@ module.exports = {
         //blockNumber: 13619920, // Nov 15, 2021
         url: "https://eth-mainnet.alchemyapi.io/v2/4gZBZgXw-GGmzJF3R6FTJvXKNK_XDTJn",
       },
+      loggingEnabled: true
     },
 
     localhost: {
