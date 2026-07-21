@@ -1,25 +1,31 @@
 {
-  "name": "hardhat-project",
+  "name": "milestone-escrow",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Tenant-governed milestone escrow with independent evidence approval",
+  "overrides": {
+    "adm-zip": "0.6.0",
+    "serialize-javascript": "7.0.7"
+  },
+  "scripts": {
+    "compile": "hardhat compile",
+    "test": "hardhat test",
+    "check": "npm run compile && npm test && solhint --max-warnings 0 'contracts/**/*.sol'",
+    "node": "hardhat node --hostname 127.0.0.1",
+    "deploy:local": "hardhat run scripts/deploy.js",
+    "deploy:production": "hardhat run --network production scripts/deploy.js",
+    "clean": "hardhat clean"
+  },
   "devDependencies": {
-    "@nomiclabs/hardhat-ethers": "^2.0.3",
-    "@nomiclabs/hardhat-etherscan": "^2.1.8",
-    "@nomiclabs/hardhat-waffle": "^2.0.1",
-    "chai": "^4.3.4",
-    "dotenv": "^10.0.0",
-    "eslint": "^7.32.0",
-    "eslint-config-prettier": "^8.3.0",
-    "eslint-config-standard": "^16.0.3",
-    "eslint-plugin-import": "^2.25.4",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-prettier": "^3.4.1",
-    "eslint-plugin-promise": "^5.2.0",
-    "ethereum-waffle": "^3.4.0",
-    "ethers": "^5.5.2",
-    "hardhat": "^2.9.1",
-    "hardhat-gas-reporter": "^1.0.6",
-    "prettier": "^2.5.1",
-    "prettier-plugin-solidity": "^1.0.0-beta.13",
-    "solhint": "^3.3.6",
-    "solidity-coverage": "^0.7.17"
+    "@nomicfoundation/hardhat-ethers": "4.0.15",
+    "@nomicfoundation/hardhat-ethers-chai-matchers": "3.0.11",
+    "@nomicfoundation/hardhat-mocha": "3.0.21",
+    "@nomicfoundation/hardhat-network-helpers": "3.0.11",
+    "chai": "6.2.2",
+    "ethers": "6.17.0",
+    "hardhat": "3.10.0",
+    "mocha": "11.3.0",
+    "solhint": "6.2.3"
   }
 }

@@ -1,30 +1,16 @@
-// We require the Hardhat Runtime Environment explicitly here. This is optional
-// but useful for running the script in a standalone fashion through `node <script>`.
-//
-// When running the script with `npx hardhat run <script>` you'll find the Hardhat
-// Runtime Environment's members available in the global scope.
-const hre = require("hardhat");
+import { ethers as ethersLibrary } from 'ethers'
+import { network } from 'hardhat'
 
-async function main() {
-  // Hardhat always runs the compile task when running scripts with its command
-  // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
-
-  // We get the contract to deploy
-  const Greeter = await hre.ethers.getContractFactory("Greeter");
-  const greeter = await Greeter.deploy("Hello, Hardhat!");
-
-  await greeter.deployed();
-
-  console.log("Greeter deployed to:", greeter.address);
+const { ethers } = await network.create()
+const chain = await ethers.provider.getNetwork()
+const chainId = chain.chainId.toString()
+const local = chainId === '31337'
+if (!local) {
+  if (process.env.ALLOW_LIVE_DEPLOY !== 'I_UNDERSTAND_THIS_DEPLOYS_IMMUTABLE_CODE') throw new Error('Live deployment is disabled')
+  if (!process.env.EXPECTED_CHAIN_ID || process.env.EXPECTED_CHAIN_ID !== chainId) throw new Error(`Expected chain ${process.env.EXPECTED_CHAIN_ID || '<unset>'}, connected to ${chainId}`)
 }
-
-// We recommend this pattern to be able to use async/await everywhere
-// and properly handle errors.
-main().catch((error) => {
-  console.error(error);
-  process.exitCode = 1;
-});
+const escrow = await ethers.deployContract('MilestoneEscrow')
+await escrow.waitForDeployment()
+const address = await escrow.getAddress()
+const code = await ethers.provider.getCode(address)
+console.log(JSON.stringify({ contract: 'MilestoneEscrow', address, chainId, deployer: (await ethers.getSigners())[0].address, runtimeCodeHash: ethersLibrary.keccak256(code) }, null, 2))

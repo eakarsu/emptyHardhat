@@ -1,26 +1,18 @@
-#!/bin/sh
+#!/usr/bin/env bash
+set -euo pipefail
 
-cd /home/Research/emptyHardhat
-npx hardhat node --show-stack-traces --verbose &
-
-sleep 10s
-
-cd /home/Research/aave
-npm run aave:fork:main > ../erol-enzyme-aave-fork-protocol/aave.out
-#unpause lending pool
-npx hardhat unpause  --localuseraddress 0xf39fd6e51aad88f6f4ce6ab8827279cfffb92266 --hardhathost http://localhost:8545
-
-cd /home/Research/enzyme
-npx hardhat --network localhost deploy > ../erol-enzyme-aave-fork-protocol/enzyme.out
-cat ../erol-enzyme-aave-fork-protocol/enzyme.out
-
-#fix yearn vault issue
-npx hardhat yearnvault --yearnvaultgovernance 0xFEB4acf3df3cDEA7399794D0869ef76A6EfAff52  --yvault 0x19d3364a399d251e894ac732651be8b0e4e85001 --hardhathost http://localhost:8545
-
-#initialize aave lending pool
-cd /home/Research/erol-enzyme-aave-fork-protocol
-./plugEnzyme.sh
-npm run build
-npm run dev
-
-tail -F -n0 /etc/hosts
+project_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+mode="${1:-check}"
+case "$mode" in
+  check) cd "$project_dir"; exec npm run check ;;
+  local-node) cd "$project_dir"; exec npm run node ;;
+  deploy-local) cd "$project_dir"; exec npm run deploy:local ;;
+  deploy-production)
+    : "${RPC_URL:?Set RPC_URL through the secret store}"
+    : "${DEPLOYER_PRIVATE_KEY:?Set DEPLOYER_PRIVATE_KEY through the secret store}"
+    : "${EXPECTED_CHAIN_ID:?Set EXPECTED_CHAIN_ID}"
+    : "${ALLOW_LIVE_DEPLOY:?Set the documented live-deployment acknowledgement}"
+    cd "$project_dir"; exec npm run deploy:production
+    ;;
+  *) echo "Usage: $0 {check|local-node|deploy-local|deploy-production}" >&2; exit 64 ;;
+esac

@@ -1,0 +1,30 @@
+name: contract
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npm audit --audit-level=high
+      - run: bash -n bootstrap.sh
+      - name: Reproduce runtime bytecode
+        run: |
+          first=$(sha256sum artifacts/contracts/MilestoneEscrow.sol/MilestoneEscrow.json | cut -d' ' -f1)
+          npm run clean
+          npm run compile
+          second=$(sha256sum artifacts/contracts/MilestoneEscrow.sol/MilestoneEscrow.json | cut -d' ' -f1)
+          test "$first" = "$second"
+      - run: docker build -t milestone-escrow:test .
