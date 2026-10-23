@@ -15,7 +15,9 @@
     "node": "hardhat node --hostname 127.0.0.1",
     "deploy:local": "hardhat run scripts/deploy.js",
     "deploy:production": "hardhat run --network production scripts/deploy.js",
-    "clean": "hardhat clean"
+    "clean": "hardhat clean",
+    "insights": "node scripts/insights.js",
+    "test:insights": "hardhat test test/insights.test.js"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-ethers": "4.0.15",
